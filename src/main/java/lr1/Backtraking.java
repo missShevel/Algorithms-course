@@ -10,14 +10,14 @@ public class Backtraking {
 
     private List<String> regions;
     private List<String> colors;
-    private int[][] regionRelations;
+
 
     ArrayList<Region> triedAssignments;
 
-    public Backtraking(List<String> regions, List<String> colors, int[][] regionRelations) {
+    public Backtraking(List<String> regions, List<String> colors) {
         this.regions = regions;
         this.colors = colors;
-        this.regionRelations = regionRelations;
+
 
     }
 
@@ -28,7 +28,7 @@ public class Backtraking {
             return coloredRegions;
         }
 
-        String nextRegionName = selectNextRegion(problem, coloredRegions, mrv);
+        String nextRegionName = selectNextRegion(problem, coloredRegions);
         for (String color : problem.colors) {
             Region newColoredRegion = new Region(nextRegionName, color);
             coloredRegions.add(newColoredRegion);
@@ -48,7 +48,7 @@ public class Backtraking {
 
     }
 
-    private String selectNextRegion(Backtraking problem, ArrayList<Region> coloredRegions, boolean mrv) { ///mrv
+    private String selectNextRegion(Backtraking problem, ArrayList<Region> coloredRegions) { ///mrv
 
         if (coloredRegions.isEmpty()) {
             return problem.regions.get(new Random().nextInt(problem.regions.size()));
@@ -87,13 +87,11 @@ public class Backtraking {
         ArrayList<String> neighbours = findNeighbours(newColoredRegion.name);
         for (Region r : coloredRegions) {
             for (int i = 0; i < neighbours.size(); i++) {
-                if (neighbours.get(i).equals(r.name)) {
-                    if (newColoredRegion.color.equals(r.color)) {
+                if (neighbours.get(i).equals(r.name) && newColoredRegion.color.equals(r.color)) {
                         return false;
                     }
                 }
             }
-        }
         return true;
     }
 
