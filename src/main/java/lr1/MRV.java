@@ -1,4 +1,6 @@
 package lr1;
 
-public class MRV {
+ public interface MRV {
+
+     int calculateMRV(Map map);
 }
