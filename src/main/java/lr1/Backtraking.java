@@ -1,18 +1,12 @@
 package lr1;
-
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Backtraking {
 
     private List<String> regions;
     private List<String> colors;
 
-
-    ArrayList<Region> triedAssignments;
+    ArrayList<Region> triedAssignments = new ArrayList<>();
 
     public Backtraking(List<String> regions, List<String> colors) {
         this.regions = regions;
@@ -21,8 +15,7 @@ public class Backtraking {
 
     }
 
-
-    public ArrayList<Region> backtrack(Backtraking problem, ArrayList<Region> coloredRegions, boolean mrv) {
+    public ArrayList<Region> backtrack(Backtraking problem, ArrayList<Region> coloredRegions) {
 
         if (problem.regions.size() == coloredRegions.size()) {
             return coloredRegions;
@@ -34,15 +27,16 @@ public class Backtraking {
             coloredRegions.add(newColoredRegion);
 
             if (checkAssignment(newColoredRegion, coloredRegions)) { ///check in matrixx
-                triedAssignments.add(newColoredRegion/*, coloredRegions*/);
-                ArrayList<Region> result = backtrack(problem, triedAssignments, mrv);
+                //coloredRegions.add(newColoredRegion);
+                ArrayList<Region> result = backtrack(problem, coloredRegions);
+
 
                 if (result != null) {
                     return result;
                 }
 
             }
-            triedAssignments.remove(newColoredRegion);
+            coloredRegions.remove(newColoredRegion);
         }
         return null;
 
@@ -55,12 +49,12 @@ public class Backtraking {
         }
 
         ArrayList<String> regionsToCheck = new ArrayList<>();
+                regionsToCheck.addAll(problem.regions);
         for (String region : problem.regions) {
             for (Region r : coloredRegions) {
                 if (r.name.equals(region)) {
-                    continue;
+                    regionsToCheck.remove(region);
                 }
-                regionsToCheck.add(region);
             }
         }
 
@@ -80,31 +74,21 @@ public class Backtraking {
         return result;
     }
 
-
     private boolean checkAssignment(Region newColoredRegion, ArrayList<Region> coloredRegions) {
 
         //check for conflicts
         ArrayList<String> neighbours = findNeighbours(newColoredRegion.name);
         for (Region r : coloredRegions) {
             for (int i = 0; i < neighbours.size(); i++) {
-                if (neighbours.get(i).equals(r.name) && newColoredRegion.color.equals(r.color)) {
+                if ((neighbours.get(i).equals(r.name))) {
+                    if (newColoredRegion.color.equals(r.color)) {
                         return false;
                     }
+                }
                 }
             }
         return true;
     }
-
-
-
-
-/*
-1. List of neighbors
-2.Check their colors
-3. Remove their colors from possible colors
-4. Calculate remaining
- */
-
 
     private ArrayList<String> findNeighbours(String regionName) {
         Map map = new Map();
@@ -131,8 +115,8 @@ public class Backtraking {
 
         List<String> remainedColors = new ArrayList<>();
         remainedColors.addAll(colors);
-
-        while (!remainedColors.isEmpty()) {
+        int counter = colors.size();
+        while(counter > 0) {
             for (int i = 0; i < neighbours.size(); i++) {
                 for (Region r : coloredRegions) {
                     if (r.name.equals(neighbours.get(i))) {
@@ -141,6 +125,7 @@ public class Backtraking {
 
                 }
             }
+            counter--;
         }
         return remainedColors.size();
 
@@ -158,5 +143,12 @@ class Region {
         this.color = color;
     }
 
-
+    @Override
+    public String toString() {
+        return "Region{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}' + '\n';
+    }
 }
+
