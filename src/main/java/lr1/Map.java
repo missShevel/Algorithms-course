@@ -77,11 +77,7 @@ public class Map {
                "Sumy", "Ternopil", "Vinnytsia", "Volyn", "Zakarpattia", "Zaporizhzhia", "Zhytomyr");
        this.listOfRegions = new HashMap<>();
        setListOfRegions();
-
-
     }
-
-
 
     public void setListOfRegions() {
         this.listOfRegions.put("Cherkasy" ,0);
@@ -138,8 +134,4 @@ public class Map {
         res.put( 23,"Zhytomyr");
         return res;
     }
-
-
-
-
 }

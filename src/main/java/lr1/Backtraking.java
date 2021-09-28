@@ -90,7 +90,7 @@ public class Backtraking {
         return true;
     }
 
-    private ArrayList<String> findNeighbours(String regionName) {
+    public static ArrayList<String> findNeighbours(String regionName) {
         Map map = new Map();
         int[][] relations = map.getRegionsRelations();
 
