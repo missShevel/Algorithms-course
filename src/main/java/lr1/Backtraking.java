@@ -1,12 +1,11 @@
 package lr1;
+
 import java.util.*;
 
 public class Backtraking {
 
     private List<String> regions;
     private List<String> colors;
-
-    ArrayList<Region> triedAssignments = new ArrayList<>();
 
     public Backtraking(List<String> regions, List<String> colors) {
         this.regions = regions;
@@ -49,7 +48,7 @@ public class Backtraking {
         }
 
         ArrayList<String> regionsToCheck = new ArrayList<>();
-                regionsToCheck.addAll(problem.regions);
+        regionsToCheck.addAll(problem.regions);
         for (String region : problem.regions) {
             for (Region r : coloredRegions) {
                 if (r.name.equals(region)) {
@@ -85,8 +84,8 @@ public class Backtraking {
                         return false;
                     }
                 }
-                }
             }
+        }
         return true;
     }
 
@@ -116,7 +115,7 @@ public class Backtraking {
         List<String> remainedColors = new ArrayList<>();
         remainedColors.addAll(colors);
         int counter = colors.size();
-        while(counter > 0) {
+        while (counter > 0) {
             for (int i = 0; i < neighbours.size(); i++) {
                 for (Region r : coloredRegions) {
                     if (r.name.equals(neighbours.get(i))) {
@@ -136,7 +135,7 @@ public class Backtraking {
 class Region {
     String name;
     String color;
-    int number;
+
 
     public Region(String name, String color) {
         this.name = name;
@@ -148,7 +147,7 @@ class Region {
         return "Region{" +
                 "name='" + name + '\'' +
                 ", color='" + color + '\'' +
-                '}' + '\n';
+                "}\n";
     }
 }
 

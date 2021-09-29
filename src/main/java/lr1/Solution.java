@@ -2,14 +2,14 @@ package lr1;
 
 import java.util.*;
 
-public class Solution implements Cloneable{
+public class Solution extends HashMap {
 
     private HashMap<Integer, String> coloredMap;
 
     public Solution() {
         HashMap<Integer, String> tempMap = new HashMap<>();
         List<String> colors = Arrays.asList("Red", "Green", "Blue", "Yellow");
-        for (int i = 1; i < 25; i++) {
+        for (int i = 1; i <= Map.listOfRegions.size(); i++) {
             tempMap.put(i, colors.get(new Random().nextInt(colors.size())));
         }
         this.coloredMap = tempMap;
@@ -21,7 +21,6 @@ public class Solution implements Cloneable{
 
 
     public int calculatePairsOfConflicts() {
-        Map map = new Map();
         HashMap<Integer, String> numberedRegions = Map.numberAndRegion();
         List<String> checkedRegions = new LinkedList<>();
         int conflicts = 0;
@@ -29,13 +28,14 @@ public class Solution implements Cloneable{
         for (int i = 1; i < 25; i++) {
             String colorOfRegion = this.coloredMap.get(i);
             ArrayList<String> neighbours = Backtraking.findNeighbours(numberedRegions.get(i - 1));
+
             for (String neighbour :
                     neighbours) {
                 if (!(checkedRegions.contains(neighbour))) {
                     if (colorOfRegion
                             .equals(this.coloredMap
-                                    .get(map.listOfRegions
-                                            .get(neighbour)))) {
+                                    .get(Map.listOfRegions
+                                            .get(neighbour)) + 1)) {
                         conflicts++;
                     }
                 }
@@ -45,41 +45,41 @@ public class Solution implements Cloneable{
         return conflicts;
     }
 
-    HashMap<Integer, String> getColoredMap(){
+    HashMap<Integer, String> getColoredMap() {
         return this.coloredMap;
     }
 
 
-    public ArrayList<Solution> generateChildren(ArrayList<Integer> alreadyChangedRegions) throws CloneNotSupportedException {
+    public ArrayList<Solution> generateChildren() {
         ArrayList<Solution> children = new ArrayList<>();
         List<String> colors = Arrays.asList("Red", "Green", "Blue", "Yellow");
-do {
-    int numberOfRegion = new Random().nextInt(24);
-    if (!(alreadyChangedRegions.contains(numberOfRegion))) {
-        for (String color : colors) {
-            HashMap<Integer, String> newSolutionMap = new HashMap<>(getColoredMap());
-            if (!(newSolutionMap.get(numberOfRegion).equals(color))) {
-                Solution child = new Solution(newSolutionMap);
-                child.coloredMap.put(numberOfRegion, color);
-                children.add(child);
+        do {
+            int numberOfRegion = (int) Math.floor(Math.random() * (24 - 1 + 1) + 1);
+            for (String color : colors) {
+                HashMap<Integer, String> newSolutionMap = new HashMap<>(getColoredMap());
+
+                if (!(newSolutionMap.get(numberOfRegion).equals(color))) {
+                    Solution child = new Solution(newSolutionMap);
+                    child.coloredMap.put(numberOfRegion, color);
+                    children.add(child);
+                }
             }
-        }
-    }
-    alreadyChangedRegions.add(numberOfRegion);
-} while(children.isEmpty());
+        } while (children.isEmpty());
         return children;
 
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public String toString() {
-        return "Solution{" +
-                "coloredMap=" + coloredMap +
-                '}';
+        HashMap<Integer, String> numberAndRegion = Map.numberAndRegion();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.coloredMap.size(); i++) {
+            sb.append("Region{");
+            sb.append("name= '").append(numberAndRegion.get(i)).append("', color= '").append(this.coloredMap.get(i + 1));
+            sb.append("'}\n");
+        }
+        return sb.toString();
     }
+
 }
