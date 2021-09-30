@@ -5,6 +5,7 @@ import java.util.*;
 public class Solution extends HashMap {
 
     private HashMap<Integer, String> coloredMap;
+    public static Set<Integer> changedRegions = new HashSet<>();
 
     public Solution() {
         HashMap<Integer, String> tempMap = new HashMap<>();
@@ -35,14 +36,14 @@ public class Solution extends HashMap {
                     if (colorOfRegion
                             .equals(this.coloredMap
                                     .get(Map.listOfRegions
-                                            .get(neighbour)) + 1)) {
+                                            .get(neighbour) + 1))) {
                         conflicts++;
                     }
                 }
-                checkedRegions.add(coloredMap.get(i));
+                checkedRegions.add(Map.numberAndRegion().get(i-1));
             }
         }
-        return conflicts;
+        return conflicts ;
     }
 
     HashMap<Integer, String> getColoredMap() {
@@ -51,13 +52,23 @@ public class Solution extends HashMap {
 
 
     public ArrayList<Solution> generateChildren() {
+        if(changedRegions.size() == 24){
+            changedRegions.clear();
+        }
         ArrayList<Solution> children = new ArrayList<>();
         List<String> colors = Arrays.asList("Red", "Green", "Blue", "Yellow");
+        int numberOfRegion = 0;
+
         do {
-            int numberOfRegion = (int) Math.floor(Math.random() * (24 - 1 + 1) + 1);
+            if(changedRegions.isEmpty()) {
+                numberOfRegion = (int) Math.floor(Math.random() * (24 - 1 + 1) + 1);
+            } else {
+                do {
+                    numberOfRegion = (int) Math.floor(Math.random() * (24 - 1 + 1) + 1);
+                } while (changedRegions.contains(numberOfRegion));
+            }
             for (String color : colors) {
                 HashMap<Integer, String> newSolutionMap = new HashMap<>(getColoredMap());
-
                 if (!(newSolutionMap.get(numberOfRegion).equals(color))) {
                     Solution child = new Solution(newSolutionMap);
                     child.coloredMap.put(numberOfRegion, color);
@@ -65,6 +76,7 @@ public class Solution extends HashMap {
                 }
             }
         } while (children.isEmpty());
+        changedRegions.add(numberOfRegion);
         return children;
 
     }

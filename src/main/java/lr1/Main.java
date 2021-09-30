@@ -15,10 +15,15 @@ public class Main {
         System.out.println(coloredMap);
 
 
-        Solution s = new Solution();
+       Solution s = new Solution();
         Solution result = SA.simaltedAnnealing(s);
-        System.out.println("Simulated annealing");
+        System.out.println("Simulated annealing result");
         System.out.println(result);
+        System.out.println("Anneal result estimation");
+        System.out.println(result.calculatePairsOfConflicts());
+        System.out.println("Start state result estimation");
+        System.out.println(s.calculatePairsOfConflicts());
+
 
 
     }

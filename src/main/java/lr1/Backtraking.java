@@ -26,10 +26,7 @@ public class Backtraking {
             coloredRegions.add(newColoredRegion);
 
             if (checkAssignment(newColoredRegion, coloredRegions)) { ///check in matrixx
-                //coloredRegions.add(newColoredRegion);
                 ArrayList<Region> result = backtrack(problem, coloredRegions);
-
-
                 if (result != null) {
                     return result;
                 }
@@ -146,7 +143,7 @@ class Region {
     public String toString() {
         return "Region{" +
                 "name='" + name + '\'' +
-                ", color='" + color + '\'' +
+                ", color='" + color +
                 "}\n";
     }
 }
