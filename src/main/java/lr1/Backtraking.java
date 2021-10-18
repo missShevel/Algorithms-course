@@ -4,6 +4,10 @@ import java.util.*;
 
 public class Backtraking {
 
+    public static int numberOfStates = 0;
+    public static int numberOfStatesChecked = 0;
+    public static int numberOfStatesInMemory = 0;
+
     private List<String> regions;
     private List<String> colors;
 
@@ -24,18 +28,18 @@ public class Backtraking {
         for (String color : problem.colors) {
             Region newColoredRegion = new Region(nextRegionName, color);
             coloredRegions.add(newColoredRegion);
+            numberOfStates++;
 
-            if (checkAssignment(newColoredRegion, coloredRegions)) { ///check in matrixx
-                //coloredRegions.add(newColoredRegion);
+            if (checkAssignment(newColoredRegion, coloredRegions)) {
+                numberOfStatesInMemory++;///check in matrixx
                 ArrayList<Region> result = backtrack(problem, coloredRegions);
-
-
                 if (result != null) {
                     return result;
                 }
 
             }
             coloredRegions.remove(newColoredRegion);
+            numberOfStatesChecked++;
         }
         return null;
 
@@ -130,6 +134,12 @@ public class Backtraking {
 
     }
 
+    public static void printStatistics(){
+        System.out.println("Number of all states : " + numberOfStates);
+        System.out.println("Number of states in memory: " + numberOfStatesInMemory);
+        System.out.println("Number of checked states: " + numberOfStatesChecked);
+    }
+
 }
 
 class Region {
@@ -146,7 +156,7 @@ class Region {
     public String toString() {
         return "Region{" +
                 "name='" + name + '\'' +
-                ", color='" + color + '\'' +
+                ", color='" + color +
                 "}\n";
     }
 }

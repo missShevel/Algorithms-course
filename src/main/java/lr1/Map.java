@@ -35,10 +35,6 @@ public class Map {
         return regions;
     }
 
-    public void setRegions(List regions) {
-        this.regions = regions;
-    }
-
     public static HashMap<String, Integer> getListOfRegions() {
         return listOfRegions;
     }
