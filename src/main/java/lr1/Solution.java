@@ -44,14 +44,14 @@ public class Solution extends HashMap {
                     if (colorOfRegion
                             .equals(this.coloredMap
                                     .get(Map.listOfRegions
-                                            .get(neighbour) + 1))) {
+                                            .get(neighbour)) + 1)) {
                         conflicts++;
                     }
                 }
-                checkedRegions.add(Map.numberAndRegion().get(i-1));
+                checkedRegions.add(coloredMap.get(i));
             }
         }
-        return conflicts ;
+        return conflicts;
     }
 
     HashMap<Integer, String> getColoredMap() {
@@ -69,6 +69,7 @@ public class Solution extends HashMap {
                 numberOfRegion = (int) Math.floor(Math.random() * (24 - 1 + 1) + 1);
             for (String color : colors) {
                 HashMap<Integer, String> newSolutionMap = new HashMap<>(getColoredMap());
+
                 if (!(newSolutionMap.get(numberOfRegion).equals(color))) {
                     Solution child = new Solution(newSolutionMap);
                     child.coloredMap.put(numberOfRegion, color);

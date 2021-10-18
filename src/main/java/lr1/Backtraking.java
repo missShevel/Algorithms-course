@@ -33,6 +33,8 @@ public class Backtraking {
             if (checkAssignment(newColoredRegion, coloredRegions)) {
                 numberOfStatesInMemory++;///check in matrixx
                 ArrayList<Region> result = backtrack(problem, coloredRegions);
+
+
                 if (result != null) {
                     return result;
                 }
@@ -156,7 +158,7 @@ class Region {
     public String toString() {
         return "Region{" +
                 "name='" + name + '\'' +
-                ", color='" + color +
+                ", color='" + color + '\'' +
                 "}\n";
     }
 }

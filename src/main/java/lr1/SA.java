@@ -8,13 +8,13 @@ public class SA {
     public static int numberOfStatesChecked = 0;
 
     public static Solution simaltedAnnealing(Solution problem) {
+
         ArrayList<Solution> children;
         Solution current = problem;
         int t = 1;
         while (true) {
             children = current.generateChildren();
-            numberOfStates += children.size();
-            int T = schedule(t, 4);
+            int T = schedule(t, 7);
             if (T <= 0) {
                 return current;
             }
@@ -40,9 +40,8 @@ public class SA {
      * t - number of iteration
      * k - linear koef (try different values)
      */
-
     private static int schedule(int t, int k) {
-        return 1000 - (k*t);
+        return 1000 - (k * t);
     }
 
     public static void printStatistics(){
