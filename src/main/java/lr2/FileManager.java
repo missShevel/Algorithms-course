@@ -1,23 +1,20 @@
 package lr2;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class FileManager {
 
-    String fileName;
-    int numberOfElements;
+    int fileSize;
 
     public void generateFile(int size) {
+        this.fileSize = size;
         File database = new File("./", "Data.csv");
         Random rng = new Random();
         Set<Integer> generatedSet = new LinkedHashSet<>();
         ArrayList<Integer> keys = new ArrayList<>();
         while (generatedSet.size() < size) {
-            Integer next = rng.nextInt(10000) + 1;
+            Integer next = rng.nextInt(size) + 1;
             generatedSet.add(next);
         }
         keys.addAll(generatedSet);
@@ -43,7 +40,4 @@ public class FileManager {
         }
         return r;
     }
-
-
-
 }
