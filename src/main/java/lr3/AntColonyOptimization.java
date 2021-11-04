@@ -17,19 +17,19 @@ public class AntColonyOptimization {
 
     private int numberOfCities;
     private double Lmin;
-    private float [][] graph;
-    private float [][] sightMatrix;
-    private float [][] trails;
+    private float[][] graph;
+    private float[][] sightMatrix;
+    private float[][] trails;
     private List<Ant> ants = new ArrayList<>();
-    private Random  random = new Random();
+    private Random random = new Random();
     private double probabilities[];
 
     private int currentIndex;
 
-    private int [] bestTourOrder;
+    private int[] bestTourOrder;
     private float bestTourLength;
 
-    public AntColonyOptimization(float [][] generatedMatrix){
+    public AntColonyOptimization(float[][] generatedMatrix) {
         this.graph = generatedMatrix;
         this.trails = new float[generatedMatrix.length][generatedMatrix.length];
         this.sightMatrix = new float[generatedMatrix.length][generatedMatrix.length];
@@ -41,32 +41,38 @@ public class AntColonyOptimization {
     }
 
     public int[] solve() {
-        putAntsOnPositions();
+
         setStartTrails();
         setSightMatrix();
         IntStream.range(0, maxIterations)
                 .forEach(i -> {
+                    putAntsOnPositions();
                     moveAnts();
                     updateTrails();
                     updateBestSolution();
+                    if (i % 20 == 0) {
+                        System.out.println("Number of iteration " + i);
+                        System.out.println("Length of the best path founded: " + (bestTourLength));
+                        System.out.println("Order of best solution: " + Arrays.toString(bestTourOrder));
+                        System.out.println();
+                    }
+
                 });
-        System.out.println("Length of the best path founded: " + (bestTourLength - numberOfCities));
-        System.out.println("Order of best solution: " + Arrays.toString(bestTourOrder));
         return bestTourOrder.clone();
     }
 
     private void setStartTrails() {
         IntStream.range(0, numberOfCities)
                 .forEach(i -> {
-                    IntStream.range(0,numberOfCities)
-                            .forEach(j -> trails[i][j] = (abs(new Random().nextInt()))%3 + 1);
+                    IntStream.range(0, numberOfCities)
+                            .forEach(j -> trails[i][j] = ((abs(new Random().nextInt())) % 3 + 1) / 10.0f);
                 });
     }
 
     private void setSightMatrix() {
         IntStream.range(0, numberOfCities)
                 .forEach(i -> {
-                    IntStream.range(0,numberOfCities)
+                    IntStream.range(0, numberOfCities)
                             .forEach(j -> this.sightMatrix[i][j] = 1.0f / graph[i][j]);
                 });
     }
@@ -83,33 +89,38 @@ public class AntColonyOptimization {
     }
 
     private void moveAnts() {
-    IntStream.range(currentIndex, numberOfCities - 1)
-        .forEach(i -> {
-            ants.forEach(ant -> ant.visitCity(currentIndex, selectNextCity(ant)));
-            currentIndex++;
-        });
+        IntStream.range(currentIndex, numberOfCities - 1)
+                .forEach(i -> {
+                    ants.forEach(ant -> {
+                        ant.visitCity(currentIndex, selectNextCity(ant));
+
+                    });
+                    currentIndex++;
+                });
     }
 
     private int selectNextCity(Ant ant) {
         int t = random.nextInt(numberOfCities - currentIndex);
-        if(random.nextDouble() < randomFactor) {
+        if (random.nextDouble() < randomFactor) {
             OptionalInt cityIndex = IntStream.range(0, numberOfCities)
                     .filter(i -> i == t && !ant.isVisited(i))
                     .findFirst();
-            if(cityIndex.isPresent()) {
+            if (cityIndex.isPresent()) {
                 return cityIndex.getAsInt();
             }
         }
         calculateProbabilities(ant);
-        double r = random.nextDouble();
-        double total = 0;
-        for (int i = 0; i < numberOfCities; i++){
-            total += probabilities[i];
-            if (total >= r){
-                return i;
+        double r = Double.MIN_VALUE;
+        int index = 0;
+        for (int i = 0; i < numberOfCities; i++) {
+            if (r < probabilities[i]) {
+                r = probabilities[i];
+                index = i;
             }
         }
-        throw new RuntimeException("No cities left");
+        return index;
+
+//        throw new RuntimeException("No cities left");
     }
 
     private void calculateProbabilities(Ant ant) {
@@ -137,10 +148,10 @@ public class AntColonyOptimization {
                 trails[i][j] *= (1.0 - evaporation);
             }
         }
-        for(Ant a : ants){
+        for (Ant a : ants) {
             float contribution = (float) (Lmin / a.trailLength(graph));
             for (int i = 0; i < numberOfCities - 1; i++) {
-                trails[a.trail[i]][a.trail[i+1]] += contribution;
+                trails[a.trail[i]][a.trail[i + 1]] += contribution;
             }
             trails[a.trail[numberOfCities - 1]][a.trail[0]] += contribution;
         }
@@ -151,17 +162,15 @@ public class AntColonyOptimization {
             bestTourOrder = ants.get(0).trail;
             bestTourLength = ants.get(0).trailLength(graph);
         }
-        for(Ant a : ants) {
+
+        for (Ant a : ants) {
             if (a.trailLength(graph) < bestTourLength) {
                 bestTourLength = a.trailLength(graph);
                 bestTourOrder = a.trail.clone();
+//
             }
         }
     }
-
-
-
-
 
 
 }
