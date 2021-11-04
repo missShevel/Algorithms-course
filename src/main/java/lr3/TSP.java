@@ -1,6 +1,8 @@
 package lr3;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class TSP {
 
@@ -41,7 +43,51 @@ public class TSP {
         return numberOfCities;
     }
 
-    public static int greedySolution(){
-        return 500;
+    public static float greedySolution(float[][] graph) {
+        float tourLength = 0;
+        int counter = 0;
+        int i = 0, j = 0;
+        float minDistance = Float.MAX_VALUE;
+        Set<Integer> visitedCities = new HashSet<>();
+
+        visitedCities.add(new Random().nextInt(100));
+        int[] route = new int[graph.length];
+
+        while (i < graph.length && j < graph[i].length) {
+            if (counter >= graph[i].length - 1) {
+                break;
+            }
+
+            if (j != i && !(visitedCities.contains(j))) {
+                if (graph[i][j] < minDistance) {
+                    minDistance = graph[i][j];
+                    route[counter] = j + 1;
+                }
+            }
+            j++;
+
+
+            if (j == graph[i].length) {
+                tourLength += minDistance;
+                minDistance = Float.MAX_VALUE;
+                visitedCities.add(route[counter] - 1);
+                j = 0;
+                i = route[counter] - 1;
+                counter++;
+            }
+        }
+
+        i = route[counter - 1] - 1;
+
+        for (j = 0; j < graph.length; j++) {
+
+            if ((i != j) && graph[i][j] < minDistance) {
+                minDistance = graph[i][j];
+                route[counter] = j + 1;
+            }
+        }
+        tourLength += minDistance;
+        return tourLength;
     }
+
 }

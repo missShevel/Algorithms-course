@@ -10,6 +10,9 @@ public class Main {
             System.out.println("//////");
         }
 
+        System.out.print("Greedy solution: ");
+        System.out.println(TSP.greedySolution(m.getDistanceMatrix()));
+
 
     }
 }

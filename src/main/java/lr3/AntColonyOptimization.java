@@ -35,7 +35,7 @@ public class AntColonyOptimization {
         this.sightMatrix = new float[generatedMatrix.length][generatedMatrix.length];
         this.probabilities = new double[generatedMatrix.length];
         this.numberOfCities = generatedMatrix.length;
-        this.Lmin = TSP.greedySolution();
+        this.Lmin = TSP.greedySolution(generatedMatrix);
         IntStream.range(0, numberOfAnts)
                 .forEach(i -> ants.add(new Ant(numberOfCities)));
     }
