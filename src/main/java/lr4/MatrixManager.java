@@ -7,32 +7,49 @@ import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-public class TSP {
+public class MatrixManager {
+    static String fileName = "Matrix.txt";
+    private int numberOfCities;
+    private float[][] distanceMatrix;
 
-    float[][] distanceMatrix;
-    int numberOfCities;
 
-    public TSP(int numberOfCities) {
-        this.numberOfCities = numberOfCities;
+    public MatrixManager() throws IOException {
+        this.numberOfCities = getNumberOfLines();
         this.distanceMatrix = new float[numberOfCities][numberOfCities];
-//        Random r = new Random();
-//        for (int i = 0; i < numberOfCities; i++) {
-//            for (int j = 0; j < numberOfCities; j++) {
-//                if (i == j) {
-//                    distanceMatrix[i][j] = 0;
-//                } else if (distanceMatrix[i][j] != 0){
-//                    continue;
-//                } else {
-//                    distanceMatrix[i][j] = distanceMatrix[j][i] = r.nextFloat() * (50 - 5) + 5;
-//                }
-//            }
-//        }
+        readMatrix();
     }
-//    public TSP(int numberOfCities, String fileName){
-//        this.numberOfCities = numberOfCities;
-//        this.distanceMatrix = distanceMatrix;
-//    }
-//
+
+    public MatrixManager(int numberOfCities){
+        this.numberOfCities = numberOfCities;
+        this.distanceMatrix = generateRandomMatrix();
+    }
+    private int getNumberOfLines(){
+        int lines = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            while (reader.readLine() != null) lines++;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    public float[][] generateRandomMatrix(){
+       float[][] randomMatrix = new float[numberOfCities][numberOfCities];
+        Random r = new Random();
+        for (int i = 0; i < numberOfCities; i++) {
+            for (int j = 0; j < numberOfCities; j++) {
+                if (i == j) {
+                    randomMatrix[i][j] = 0;
+                } else if (randomMatrix[i][j] != 0){
+                    continue;
+                } else {
+                    randomMatrix[i][j] = randomMatrix[j][i] = r.nextFloat() * (50 - 5) + 5;
+                }
+            }
+        }
+        return randomMatrix;
+    }
+
     public void saveInFile(){
         File matrix = new File("./", "Matrix.txt");
         try (FileWriter fstream = new FileWriter(matrix);
@@ -62,15 +79,20 @@ public class TSP {
         }
     }
 
-    public float[][] getDistanceMatrix() {
-        return distanceMatrix;
+    public void setDistanceMatrix(float[][] distanceMatrix) {
+        this.distanceMatrix = distanceMatrix;
+    }
+
+    public  float[][] getDistanceMatrix() {
+        float [][] result = distanceMatrix;
+        return result;
     }
 
     public int getNumberOfCities() {
         return numberOfCities;
     }
 
-    public void readMatrix(String fileName) throws IOException {
+    public void readMatrix() throws IOException {
         AtomicInteger rowNumber = new AtomicInteger();
         rowNumber.set(0);
         try (Stream<String> stream = Files.lines(Path.of(fileName))) {
@@ -87,6 +109,7 @@ public class TSP {
             }
             );
         }
+
     }
 }
 
