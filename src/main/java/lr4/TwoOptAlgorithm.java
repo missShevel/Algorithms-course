@@ -2,7 +2,6 @@ package lr4;
 
 public class TwoOptAlgorithm {
     public static Tour run(Tour tour) {
-        System.out.println(tour);
         float dist = tour.getDistance();
         for (int i = 0; i < tour.tourSize() - 2; i++) {
             for (int j = i+1; j < tour.tourSize()-1; j++) {

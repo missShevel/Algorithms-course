@@ -1,6 +1,9 @@
 package lr4;
 
+import lr3.TSP;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Population {
 
@@ -11,10 +14,13 @@ public class Population {
         tours = new Tour[populationSize];
         // If we need to initialise a population of tours do so
         if (initialise) {
+//            float[][] graph = new MatrixManager().getDistanceMatrix();
+//            ArrayList<Integer> expectedSolution = TSP.greedySolution(graph);
+//            tours[0] = new Tour(expectedSolution);
             // Loop and create individuals
             for (int i = 0; i < populationSize(); i++) {
                 Tour newTour = new Tour();
-                newTour.generateChromosome();
+                newTour.generateChromosome(/*expectedSolution*/);
                 saveTour(i, newTour);
             }
         }

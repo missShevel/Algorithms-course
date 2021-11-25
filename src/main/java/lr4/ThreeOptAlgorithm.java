@@ -18,7 +18,8 @@ public class ThreeOptAlgorithm {
                     float newDistance = route.getDistance();
 
                     if (newDistance < distance)
-                        return run(route);
+//                        return run(route);
+                        return route;
                     else
                     {
                         route.swapIndexes(j, k);

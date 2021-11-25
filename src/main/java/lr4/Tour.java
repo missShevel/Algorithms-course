@@ -29,13 +29,15 @@ public class Tour {
 
     }
 
-    public Tour(ArrayList tour) throws IOException {
+    public Tour(ArrayList<Integer> tour) throws IOException {
         this.tour = tour;
     }
 
     // Creates a random chromosome
-    public void generateChromosome() {
+    public void generateChromosome(/*ArrayList<Integer> expectedSolution*/) {
         // Loop through all our destination cities and add them to our tour
+        //tour = expectedSolution;
+        // Randomly reorder the tour
         for (int cityIndex = 0; cityIndex < TourManager.numberOfCities(); cityIndex++) {
             setCity(cityIndex, TourManager.getCity(cityIndex));
         }
@@ -46,6 +48,10 @@ public class Tour {
     // Gets a city from the tour
     public int getCity(int tourPosition) {
         return (int)tour.get(tourPosition);
+    }
+
+    public ArrayList<Integer> getCities(){
+        return tour;
     }
 
     // Sets a city in a certain position within a tour
@@ -110,6 +116,9 @@ public class Tour {
         Collections.swap(tour, i, j);
     }
 
+    public int getPosition(int city){
+        return tour.indexOf(city);
+    }
     @Override
     public String toString() {
         String geneString = "";

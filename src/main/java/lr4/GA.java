@@ -8,7 +8,7 @@ public class GA {
      * TODO:
      * add 2 more crossover operators:
      * - Ordered crossover (is implemented)
-     * - sequential constructive crossover.(https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/SCX.java)
+     * - sequential constructive crossover.(https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/SCX.java) - done
      * - Partially mapped crossover (https://github.com/PLT875/Solving-the-TSP-using-Genetic-Algorithms/blob/master/src/Crossover/PMX.java)
      * <p>
      * add 1 more mutation
@@ -21,7 +21,7 @@ public class GA {
      * - 3Opt (https://github.com/adamcumiskey/TSPComparison/blob/master/Greedy3OptTSP.java) - done
      */
     /* GA parameters */
-    private static final double mutationRate = 0.015;
+     static final double mutationRate = 0.015;
     private static final int tournamentSize = 5;
     private static final boolean elitism = true;
 
@@ -58,88 +58,10 @@ public class GA {
 ///////////////////////////////////   Crossovers ///////////////////////////////////////////////////////////////////////
     // Applies crossover to a set of parents and creates offspring (Ordered crossover)
     public static Tour crossover(Tour parent1, Tour parent2) throws IOException {
-        // Create new child tour
-        Tour child = new Tour();
-
-        // Get start and end sub tour positions for parent1's tour
-        int startPos = (int) (Math.random() * parent1.tourSize());
-        int endPos = (int) (Math.random() * parent1.tourSize());
-
-        // Loop and add the sub tour from parent1 to our child
-        for (int i = 0; i < child.tourSize(); i++) {
-            // If our start position is less than the end position
-            if (startPos < endPos && i > startPos && i < endPos) {
-                child.setCity(i, parent1.getCity(i));
-            } // If our start position is larger
-            else if (startPos > endPos) {
-                if (!(i < startPos && i > endPos)) {
-                    child.setCity(i, parent1.getCity(i));
-                }
-            }
-        }
-
-        // Loop through parent2's city tour
-        for (int i = 0; i < parent2.tourSize(); i++) {
-            // If child doesn't have the city add it
-            if (!child.containsCity(parent2.getCity(i))) {
-                // Loop to find a spare position in the child's tour
-                for (int ii = 0; ii < child.tourSize(); ii++) {
-                    // Spare position found, add city
-                    if (child.getCity(ii) == -1) {
-                        child.setCity(ii, parent2.getCity(i));
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        ThreeOptAlgorithm.run(child);
-        return child;
+        //return Crossover.runOrderedCrossover(parent1,parent2);
+        return new Crossover().runPMcrossover(parent1, parent2);
     }
 
-//    public static Tour SCXcrossover(Tour parent1, Tour parent2) throws IOException {
-//        Tour child = new Tour();
-//        child.setCity(0, parent1.getCity(0));
-//
-//        for (int i = 1; i < parent1.tourSize(); i++) {
-//            int currentCity = child.getCity(i-1);
-//            int nextCityInParent1 = getNextCity(currentCity, parent1, child);
-//            int nextCityInParent2 = getNextCity(currentCity, parent2, child);
-//
-//            float p1Length = Tour.getCost(currentCity, nextCityInParent1);
-//            float p2Length = Tour.getCost(currentCity, nextCityInParent2);
-//
-//            int nextCity = p1Length < p2Length ? nextCityInParent1 : nextCityInParent2;
-//            child.setCity(i, nextCity);
-//
-//        }
-//        return child;
-//    }
-
-//    private static int getNextCity(int current, Tour parent, Tour child){
-//        int pos = parent.getPosition(current);
-//        int next;
-//        if (pos == parent.tourSize() - 1) {
-//            next = parent.getCity(0);
-//        } else {
-//            next = parent.getCity(pos + 1);
-//        }
-//        // check if next already used in offspring => take first free city
-//        if (child.containsCity(next)) {
-//            next = getFirstUnused(parent, child);
-//        }
-//        return next;
-//    }
-
-//    private static int getFirstUnused(Tour parent, Tour child) {
-//        for (int city : parent.getCities()) {
-//            if (!child.containsCity(city)) {
-//                return city;
-//            }
-//        }
-//        return 0;
-//    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
