@@ -1,13 +1,24 @@
 package lr4;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GA {
     /**
      * TODO:
-     * -Add 2 more crossover operators
+     * add 2 more crossover operators:
+     * - Ordered crossover (is implemented)
+     * - sequential constructive crossover.(https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/SCX.java)
+     * - Partially mapped crossover (https://github.com/PLT875/Solving-the-TSP-using-Genetic-Algorithms/blob/master/src/Crossover/PMX.java)
+     * <p>
      * add 1 more mutation
+     * - Edge swaps (is implemented)
+     * - Edge inversion (is implemented)
+     * <p>
+     * <p>
      * add 2 local adjustments
+     * - 2Opt (https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/TwoOptAlgorithm.java)- done
+     * - 3Opt (https://github.com/adamcumiskey/TSPComparison/blob/master/Greedy3OptTSP.java) - done
      */
     /* GA parameters */
     private static final double mutationRate = 0.015;
@@ -24,7 +35,6 @@ public class GA {
             newPopulation.saveTour(0, population.getFittest());
             elitismOffset = 1;
         }
-
         // Crossover population
         // Loop over the new population's size and create individuals from
         // Current population
@@ -42,11 +52,11 @@ public class GA {
         for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
             mutate(newPopulation.getTour(i));
         }
-
         return newPopulation;
     }
 
-    // Applies crossover to a set of parents and creates offspring
+///////////////////////////////////   Crossovers ///////////////////////////////////////////////////////////////////////
+    // Applies crossover to a set of parents and creates offspring (Ordered crossover)
     public static Tour crossover(Tour parent1, Tour parent2) throws IOException {
         // Create new child tour
         Tour child = new Tour();
@@ -82,15 +92,65 @@ public class GA {
                 }
             }
         }
+
+
+        ThreeOptAlgorithm.run(child);
         return child;
     }
 
-    // Mutate a tour using swap mutation
+//    public static Tour SCXcrossover(Tour parent1, Tour parent2) throws IOException {
+//        Tour child = new Tour();
+//        child.setCity(0, parent1.getCity(0));
+//
+//        for (int i = 1; i < parent1.tourSize(); i++) {
+//            int currentCity = child.getCity(i-1);
+//            int nextCityInParent1 = getNextCity(currentCity, parent1, child);
+//            int nextCityInParent2 = getNextCity(currentCity, parent2, child);
+//
+//            float p1Length = Tour.getCost(currentCity, nextCityInParent1);
+//            float p2Length = Tour.getCost(currentCity, nextCityInParent2);
+//
+//            int nextCity = p1Length < p2Length ? nextCityInParent1 : nextCityInParent2;
+//            child.setCity(i, nextCity);
+//
+//        }
+//        return child;
+//    }
+
+//    private static int getNextCity(int current, Tour parent, Tour child){
+//        int pos = parent.getPosition(current);
+//        int next;
+//        if (pos == parent.tourSize() - 1) {
+//            next = parent.getCity(0);
+//        } else {
+//            next = parent.getCity(pos + 1);
+//        }
+//        // check if next already used in offspring => take first free city
+//        if (child.containsCity(next)) {
+//            next = getFirstUnused(parent, child);
+//        }
+//        return next;
+//    }
+
+//    private static int getFirstUnused(Tour parent, Tour child) {
+//        for (int city : parent.getCities()) {
+//            if (!child.containsCity(city)) {
+//                return city;
+//            }
+//        }
+//        return 0;
+//    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////  Mutations ///////////////////////////////////////////////////////////////////////
+    // Mutate a tour using swap 2 genes mutation
     private static void mutate(Tour tour) {
         // Loop through tour cities
-        for(int tourPos1=0; tourPos1 < tour.tourSize(); tourPos1++){
+        for (int tourPos1 = 0; tourPos1 < tour.tourSize(); tourPos1++) {
             // Apply mutation rate
-            if(Math.random() < mutationRate){
+            if (Math.random() < mutationRate) {
                 // Get a second random position in the tour
                 int tourPos2 = (int) (tour.tourSize() * Math.random());
 
@@ -105,6 +165,44 @@ public class GA {
         }
     }
 
+
+    //Edge inversion mutation
+    private static void inversionMutation(Tour tour) {
+        if (Math.random() < mutationRate) {
+            int pos1 = (int) (tour.tourSize() * Math.random());
+            int pos2 = pos1;
+            while (pos2 == pos1) {
+                pos2 = (int) (tour.tourSize() * Math.random());
+            }
+            reverseEdges(tour, pos1, pos2);
+        }
+    }
+
+    static void reverseEdges(Tour tour, int startIndex, int endIndex) {
+        int size = tour.tourSize();
+        ArrayList<Integer> subTour = getSubtour(tour, startIndex, (endIndex + 1) % size);
+        for (int k = 0; k < subTour.size(); k++) {
+            int setIndex = (size + endIndex + 1 - (k + 1)) % size;
+            tour.setCity(setIndex, subTour.get(k));
+        }
+    }
+
+    private static ArrayList<Integer> getSubtour(Tour tour, int startIndex, int endIndex) {
+        ArrayList<Integer> subTour = new ArrayList<Integer>();
+        int index = startIndex;
+        while (index != endIndex) {
+            subTour.add(tour.getCity(index));
+            index++;
+            index = index % tour.tourSize();
+        }
+        return subTour;
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// Local optimisations ///////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Selects candidate tour for crossover
     private static Tour tournamentSelection(Population pop) throws IOException {
         // Create a tournament population

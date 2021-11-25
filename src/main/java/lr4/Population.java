@@ -47,4 +47,3 @@ public class Population {
         return tours.length;
     }
 }
-

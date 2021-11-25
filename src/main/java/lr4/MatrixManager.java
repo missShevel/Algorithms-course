@@ -10,19 +10,18 @@ import java.util.stream.Stream;
 public class MatrixManager {
     static String fileName = "Matrix.txt";
     private int numberOfCities;
-    private float[][] distanceMatrix;
+    private float[][] distanceMatrix = readMatrix(getNumberOfLines());
 
 
     public MatrixManager() throws IOException {
         this.numberOfCities = getNumberOfLines();
-        this.distanceMatrix = new float[numberOfCities][numberOfCities];
-        readMatrix();
     }
 
-    public MatrixManager(int numberOfCities){
+    public MatrixManager(int numberOfCities) throws IOException {
         this.numberOfCities = numberOfCities;
         this.distanceMatrix = generateRandomMatrix();
     }
+
     private int getNumberOfLines(){
         int lines = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -84,32 +83,32 @@ public class MatrixManager {
     }
 
     public  float[][] getDistanceMatrix() {
-        float [][] result = distanceMatrix;
-        return result;
+        return this.distanceMatrix;
     }
 
     public int getNumberOfCities() {
         return numberOfCities;
     }
 
-    public void readMatrix() throws IOException {
+    public static float[][] readMatrix(int numberOfCities) throws IOException {
+        float [][] matrix = new float[numberOfCities][numberOfCities];
         AtomicInteger rowNumber = new AtomicInteger();
         rowNumber.set(0);
         try (Stream<String> stream = Files.lines(Path.of(fileName))) {
             stream.forEach(line -> {
                 float value = Float.parseFloat(line.substring(0, line.indexOf(" ")));
-                this.distanceMatrix[rowNumber.get()][0] = value;
+                matrix[rowNumber.get()][0] = value;
                 for (int i = 1; i < numberOfCities - 1; i++) {
                     String cutted = line.substring(line.indexOf(" ")+1);
                     value = Float.parseFloat(cutted.substring(0, cutted.indexOf(" ")));
-                    this.distanceMatrix[rowNumber.get()][i] = value;
+                    matrix[rowNumber.get()][i] = value;
                     line = cutted;
                 }
                 rowNumber.getAndIncrement();
             }
             );
         }
-
+return matrix;
     }
 }
 

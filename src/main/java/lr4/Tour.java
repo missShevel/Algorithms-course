@@ -5,9 +5,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Tour {
-    float[][] distanceMatrix = new MatrixManager().getDistanceMatrix();
+    static float[][] distanceMatrix;
+
+    static {
+        try {
+            distanceMatrix = new MatrixManager().getDistanceMatrix();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Holds our tour of cities
-    private ArrayList tour = new ArrayList<Integer>();
+    private /*static*/ ArrayList tour = new ArrayList<Integer>();
     // Cache
     private double fitness = 0;
     private float distance = 0;
@@ -86,9 +95,19 @@ public class Tour {
         return tour.size();
     }
 
+    public float getCost(int from, int to){
+        int i = (int)tour.get(from);
+        int j = (int)tour.get(to);
+        return distanceMatrix[i][j];
+    }
+
     // Check if the tour contains a city
     public boolean containsCity(int city){
         return tour.contains(city);
+    }
+
+    public void swapIndexes(int i, int j){
+        Collections.swap(tour, i, j);
     }
 
     @Override

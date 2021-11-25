@@ -4,15 +4,14 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        MatrixManager m = new MatrixManager(300);
+//        MatrixManager m = new MatrixManager(20);
 //        m.saveInFile();
         MatrixManager matrix = new MatrixManager();
 
         for (int i = 0; i < matrix.getNumberOfCities(); i++) {
             TourManager.addCity(i);
         }
-//        matrix.readMatrix();
-//        matrix.printDistanceMatrix();
+
         Population pop = new Population(50, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
