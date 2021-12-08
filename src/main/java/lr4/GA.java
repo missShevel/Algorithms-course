@@ -8,8 +8,8 @@ public class GA {
      * TODO:
      * add 2 more crossover operators:
      * - Ordered crossover (is implemented)
-     * - sequential constructive crossover.(https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/SCX.java) - done
-     * - Partially mapped crossover (https://github.com/PLT875/Solving-the-TSP-using-Genetic-Algorithms/blob/master/src/Crossover/PMX.java)
+     * - Sequential constructive crossover - done
+     * - Partially mapped crossover - done
      * <p>
      * add 1 more mutation
      * - Edge swaps (is implemented)
@@ -17,8 +17,8 @@ public class GA {
      * <p>
      * <p>
      * add 2 local adjustments
-     * - 2Opt (https://github.com/tkutz/genetic-algorithms/blob/master/plugins/com.tkutz.ai.genetic.tsp/src/com/tkutz/ai/genetic/tsp/operators/TwoOptAlgorithm.java)- done
-     * - 3Opt (https://github.com/adamcumiskey/TSPComparison/blob/master/Greedy3OptTSP.java) - done
+     * - 2Opt - done
+     * - 3Opt - done
      */
     /* GA parameters */
      static final double mutationRate = 0.015;
@@ -57,9 +57,10 @@ public class GA {
 
 ///////////////////////////////////   Crossovers ///////////////////////////////////////////////////////////////////////
     // Applies crossover to a set of parents and creates offspring (Ordered crossover)
-    public static Tour crossover(Tour parent1, Tour parent2) throws IOException {
-        //return Crossover.runOrderedCrossover(parent1,parent2);
-        return new Crossover().runPMcrossover(parent1, parent2);
+    public static Tour crossover(Tour parent1, Tour parent2) {
+        return new Crossover().runOrderedCrossover(parent1, parent2);
+       // return new Crossover().runSCXcrossover(parent1, parent2);
+       // return new Crossover().runPMcrossover(parent1, parent2);
     }
 
 
@@ -86,7 +87,6 @@ public class GA {
             }
         }
     }
-
 
     //Edge inversion mutation
     private static void inversionMutation(Tour tour) {
@@ -120,13 +120,9 @@ public class GA {
         return subTour;
     }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////// Local optimisations ///////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Selects candidate tour for crossover
-    private static Tour tournamentSelection(Population pop) throws IOException {
+    private static Tour tournamentSelection(Population pop) {
         // Create a tournament population
         Population tournament = new Population(tournamentSize, false);
         // For each place in the tournament get a random candidate tour and

@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Crossover {
 
-    public  Tour runOrderedCrossover(Tour parent1, Tour parent2) throws IOException {
+    public Tour runOrderedCrossover(Tour parent1, Tour parent2) {
         Tour child = new Tour();
 
         // Get start and end sub tour positions for parent1's tour
@@ -39,17 +39,17 @@ public class Crossover {
                 }
             }
         }
-
-        ThreeOptAlgorithm.run(child);
+        //ThreeOptAlgorithm.run(child);
+        TwoOptAlgorithm.run(child);
         return child;
     }
 
-        public  Tour runSCXcrossover(Tour parent1, Tour parent2) throws IOException {
+    public Tour runSCXcrossover(Tour parent1, Tour parent2) {
         Tour child = new Tour();
         child.setCity(0, parent1.getCity(0));
 
         for (int i = 1; i < parent1.tourSize(); i++) {
-            int currentCity = child.getCity(i-1);
+            int currentCity = child.getCity(i - 1);
             int nextCityInParent1 = getNextCity(currentCity, parent1, child);
             int nextCityInParent2 = getNextCity(currentCity, parent2, child);
 
@@ -60,11 +60,12 @@ public class Crossover {
             child.setCity(i, nextCity);
 
         }
-        ThreeOptAlgorithm.run(child);
+        TwoOptAlgorithm.run(child);
+        //ThreeOptAlgorithm.run(child);
         return child;
     }
 
-    private  int getNextCity(int current, Tour parent, Tour child){
+    private int getNextCity(int current, Tour parent, Tour child) {
         int pos = parent.getPosition(current);
         int next;
         if (pos == parent.tourSize() - 1) {
@@ -88,54 +89,54 @@ public class Crossover {
         return 0;
     }
 
-    public Tour runPMcrossover(Tour parent1, Tour parent2) throws IOException {
+    public Tour runPMcrossover(Tour parent1, Tour parent2)  {
         Tour child = new Tour();
-MatchingSectionBounds matchingSectionBounds = generateRandomMatchingSectionBounds(parent1);
+        MatchingSectionBounds matchingSectionBounds = generateRandomMatchingSectionBounds(parent1);
 
-for(int i = matchingSectionBounds.lowerBound; i <= matchingSectionBounds.upperBound; i++){
-    child.setCity(i,parent1.getCity(i));
-}
-
-for(int i = matchingSectionBounds.lowerBound; i <= matchingSectionBounds.upperBound; i++){
-    int cityToCheck = parent2.getCity(i);
-    boolean cityAlreadyInChild = false;
-
-    for(int j = matchingSectionBounds.lowerBound; j <= matchingSectionBounds.upperBound
-                                                       && !cityAlreadyInChild; j++){
-        if (child.getCity(j) == cityToCheck){
-            cityAlreadyInChild = true;
+        for (int i = matchingSectionBounds.lowerBound; i <= matchingSectionBounds.upperBound; i++) {
+            child.setCity(i, parent1.getCity(i));
         }
-    }
 
-    if (!cityAlreadyInChild){
-        int foundPosition = findPositionForValueInSecondParent(matchingSectionBounds, parent1, parent2,
-                i);
-        
-        child.setCity(foundPosition, cityToCheck);
-    }
-}
+        for (int i = matchingSectionBounds.lowerBound; i <= matchingSectionBounds.upperBound; i++) {
+            int cityToCheck = parent2.getCity(i);
+            boolean cityAlreadyInChild = false;
 
-copyRemainingCities(parent1, parent2, child, matchingSectionBounds);
+            for (int j = matchingSectionBounds.lowerBound; j <= matchingSectionBounds.upperBound
+                    && !cityAlreadyInChild; j++) {
+                if (child.getCity(j) == cityToCheck) {
+                    cityAlreadyInChild = true;
+                }
+            }
 
-return child;
+            if (!cityAlreadyInChild) {
+                int foundPosition = findPositionForValueInSecondParent(matchingSectionBounds, parent1, parent2, i);
+
+                child.setCity(foundPosition, cityToCheck);
+            }
+        }
+
+        copyRemainingCities(parent1, parent2, child, matchingSectionBounds);
+        TwoOptAlgorithm.run(child);
+        //ThreeOptAlgorithm.run(child);
+        return child;
 
     }
 
     private void copyRemainingCities(Tour parent1, Tour parent2, Tour child, MatchingSectionBounds matchingSectionBounds) {
-            for (int i = 0; i < matchingSectionBounds.lowerBound; i++) {
-                if (child.getCity(i) == -1) {
-                    child.setCity(i, parent2.getCity(i));
-                }
+        for (int i = 0; i < matchingSectionBounds.lowerBound; i++) {
+            if (child.getCity(i) == -1) {
+                child.setCity(i, parent2.getCity(i));
             }
+        }
 
-            for (int i = matchingSectionBounds.upperBound; i < parent1.tourSize(); i++) {
-                if (child.getCity(i) == -1) {
-                    child.setCity(i, parent2.getCity(i));
-                }
+        for (int i = matchingSectionBounds.upperBound; i < parent1.tourSize(); i++) {
+            if (child.getCity(i) == -1) {
+                child.setCity(i, parent2.getCity(i));
             }
+        }
     }
 
-    private  int findPositionForValueInSecondParent(MatchingSectionBounds matchingSectionBounds, Tour parent1, Tour parent2, int currentPositionInSecondParent) {
+    private int findPositionForValueInSecondParent(MatchingSectionBounds matchingSectionBounds, Tour parent1, Tour parent2, int currentPositionInSecondParent) {
         int correspondingValueInFirstParent = parent1.getCity(currentPositionInSecondParent);
 
         // find value in second parent
@@ -155,7 +156,7 @@ return child;
         }
     }
 
-    private  MatchingSectionBounds generateRandomMatchingSectionBounds(Tour anyParent) {
+    private MatchingSectionBounds generateRandomMatchingSectionBounds(Tour anyParent) {
         MatchingSectionBounds matchingSectionBounds = new MatchingSectionBounds();
         matchingSectionBounds.lowerBound = ThreadLocalRandom.current().nextInt(1, anyParent.tourSize() - 2);
 
@@ -170,11 +171,9 @@ return child;
         return matchingSectionBounds;
     }
 
-     class MatchingSectionBounds {
+    class MatchingSectionBounds {
         int upperBound;
         int lowerBound;
     }
-
-
 }
 
